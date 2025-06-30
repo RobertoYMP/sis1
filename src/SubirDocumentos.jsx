@@ -29,7 +29,7 @@ const SubirDocumentos = ({ id_solicitud }) => {
       formDataHorario.append('archivo', horario);
       formDataHorario.append('id_solicitud', id_solicitud);
       formDataHorario.append('tipo', 'comprobante horario');
-      const resHorario = await fetch('http://localhost:3001/documentos', {
+      const resHorario = await fetch(`${import.meta.env.VITE_API_URL}/documentos`, {
         method: 'POST',
         body: formDataHorario
       });
@@ -39,7 +39,7 @@ const SubirDocumentos = ({ id_solicitud }) => {
       formDataCredencial.append('archivo', credencial);
       formDataCredencial.append('id_solicitud', id_solicitud);
       formDataCredencial.append('tipo', 'credencial vigente');
-      const resCredencial = await fetch('http://localhost:3001/documentos', {
+      const resCredencial = await fetch(`${import.meta.env.VITE_API_URL}/documentos`, {
         method: 'POST',
         body: formDataCredencial
       });
