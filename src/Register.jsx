@@ -13,8 +13,8 @@ const Register = () => {
     setLoading(true);
     setError('');
     setSuccess(false);
-    try {
-      const res = await fetch('http://localhost:3001/usuarios', {
+    try {//
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/usuarios/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ correo, contrasena, rol })
