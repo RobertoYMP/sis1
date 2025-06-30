@@ -15,10 +15,11 @@ const PanelCoordinador = ({ token, onLogout }) => {
   const [casilleroAsignado, setCasilleroAsignado] = useState(null);
 
   // Obtener todos los casilleros (no solo disponibles)
+  const API_URL = import.meta.env.VITE_API_URL;
   const [todosCasilleros, setTodosCasilleros] = useState([]);
   useEffect(() => {
     const fetchTodos = async () => {
-      const res = await fetch('http://localhost:3001/casilleros', {
+      const res = await fetch(`${API_URL}/casilleros`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       setTodosCasilleros(await res.json());
@@ -33,7 +34,7 @@ const PanelCoordinador = ({ token, onLogout }) => {
   const handleCrearCasillero = async (e) => {
     e.preventDefault();
     setCreando(true);
-    const res = await fetch('http://localhost:3001/casilleros', {
+    const res = await fetch(`${API_URL}/casilleros`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -45,11 +46,11 @@ const PanelCoordinador = ({ token, onLogout }) => {
       setNuevoNumero('');
       setNuevaUbicacion('');
       // Refrescar listas
-      const resTodos = await fetch('http://localhost:3001/casilleros', {
+      const resTodos = await fetch(`${API_URL}/casilleros`, {
         headers: { 'Authorization': `Bearer ${token}` }
-      });
+      }); //fetch('${API_URL}/solicitudes'
       setTodosCasilleros(await resTodos.json());
-      const resDisponibles = await fetch('http://localhost:3001/casilleros/disponibles');
+      const resDisponibles = await fetch('${API_URL}/casilleros/disponibles');
       setCasilleros(await resDisponibles.json());
     }
     setCreando(false);
@@ -59,7 +60,7 @@ const PanelCoordinador = ({ token, onLogout }) => {
     const fetchSolicitudes = async () => {
       setLoading(true);
       try {
-        const res = await fetch('http://localhost:3001/solicitudes', {
+        const res = await fetch('${API_URL}/solicitudes', {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         if (!res.ok) throw new Error('Error al obtener solicitudes');
@@ -73,38 +74,45 @@ const PanelCoordinador = ({ token, onLogout }) => {
     fetchSolicitudes();
   }, [token]);
 
-  // Cargar documentos y pagos al seleccionar una solicitud
+// Cargar documentos y pagos al seleccionar una solicitud
   useEffect(() => {
     if (!solicitudSeleccionada) return;
     const id = solicitudSeleccionada.id_solicitud;
+
     const fetchDocs = async () => {
-      const res = await fetch(`http://localhost:3001/documentos/solicitud/${id}`);
+      const res = await fetch(`${API_URL}/documentos/solicitud/${id}`);
       const docs = await res.json();
       setDocumentos(d => ({ ...d, [id]: docs }));
     };
+
     const fetchPagos = async () => {
-      const res = await fetch(`http://localhost:3001/pagos/solicitud/${id}`);
+      const res = await fetch(`${API_URL}/pagos/solicitud/${id}`);
       const pagos = await res.json();
       setPagos(p => ({ ...p, [id]: pagos }));
     };
+
     fetchDocs();
     fetchPagos();
   }, [solicitudSeleccionada]);
 
-  // Obtener casilleros disponibles al seleccionar solicitud
+// Obtener casilleros disponibles al seleccionar solicitud
   useEffect(() => {
     if (!solicitudSeleccionada) return;
+
     const fetchCasilleros = async () => {
-      const res = await fetch('http://localhost:3001/casilleros/disponibles');
+      const res = await fetch(`${API_URL}/casilleros/disponibles`);
       const data = await res.json();
       setCasilleros(data);
     };
-    // Consultar si ya tiene casillero asignado
+
     const fetchAsignacion = async () => {
       const pagosSolicitud = pagos[solicitudSeleccionada.id_solicitud] || [];
-      const pagoAprobado = pagosSolicitud.find(p => p.estado_pago === 'pagado' && p.validado_por_coordinador);
+      const pagoAprobado = pagosSolicitud.find(
+          p => p.estado_pago === 'pagado' && p.validado_por_coordinador
+      );
+
       if (pagoAprobado) {
-        const res = await fetch(`http://localhost:3001/asignaciones/pago/${pagoAprobado.id_pago}`);
+        const res = await fetch(`${API_URL}/asignaciones/pago/${pagoAprobado.id_pago}`);
         if (res.ok) {
           const asignacion = await res.json();
           setCasilleroAsignado(asignacion);
@@ -115,13 +123,15 @@ const PanelCoordinador = ({ token, onLogout }) => {
         setCasilleroAsignado(null);
       }
     };
+
     fetchCasilleros();
     fetchAsignacion();
   }, [solicitudSeleccionada, pagos]);
 
+// Cambiar estado solicitud
   const cambiarEstado = async (id_solicitud, nuevoEstado, motivo = '') => {
     try {
-      const res = await fetch(`http://localhost:3001/solicitudes/${id_solicitud}/estado`, {
+      const res = await fetch(`${API_URL}/solicitudes/${id_solicitud}/estado`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -129,10 +139,14 @@ const PanelCoordinador = ({ token, onLogout }) => {
         },
         body: JSON.stringify({ estado: nuevoEstado, motivo_rechazo: motivo })
       });
+
       if (!res.ok) throw new Error('Error al cambiar estado');
-      setSolicitudes(solicitudes => solicitudes.map(s =>
-        s.id_solicitud === id_solicitud ? { ...s, estado: nuevoEstado, motivo_rechazo: motivo } : s
-      ));
+
+      setSolicitudes(solicitudes =>
+          solicitudes.map(s =>
+              s.id_solicitud === id_solicitud ? { ...s, estado: nuevoEstado, motivo_rechazo: motivo } : s
+          )
+      );
     } catch (err) {
       alert(err.message);
     }
@@ -188,22 +202,33 @@ const PanelCoordinador = ({ token, onLogout }) => {
               </td>
               <td className="table-cell">
                 <button
-                  className={`btn btn-red${!s.estado === 'pendiente' ? ' disabled' : ''}`}
-                  onClick={async () => {
-                    if (window.confirm('¿Seguro que deseas eliminar esta solicitud?')) {
-                      const res = await fetch(`http://localhost:3001/solicitudes/${s.id_solicitud}`, {
-                        method: 'DELETE',
-                        headers: { 'Authorization': `Bearer ${token}` }
-                      });
-                      if (res.ok) {
-                        setSolicitudes(solicitudes.filter(x => x.id_solicitud !== s.id_solicitud));
-                      } else {
-                        const data = await res.json();
-                        alert(data.error || 'No se pudo eliminar');
+                    className={`btn btn-red${s.estado !== 'pendiente' ? ' disabled' : ''}`}
+                    onClick={async () => {
+                      const confirmar = window.confirm('¿Seguro que deseas eliminar esta solicitud?');
+                      if (!confirmar) return;
+
+                      try {
+                        const res = await fetch(`${API_URL}/solicitudes/${s.id_solicitud}`, {
+                          method: 'DELETE',
+                          headers: {
+                            'Authorization': `Bearer ${token}`
+                          }
+                        });
+
+                        if (res.ok) {
+                          setSolicitudes(solicitudes.filter(x => x.id_solicitud !== s.id_solicitud));
+                        } else {
+                          const data = await res.json();
+                          alert(data.error || 'No se pudo eliminar');
+                        }
+                      } catch (error) {
+                        console.error('Error al eliminar la solicitud:', error);
+                        alert('Error al conectar con el servidor');
                       }
-                    }
-                  }}
-                >Eliminar</button>
+                    }}
+                >
+                  Eliminar
+                </button>
               </td>
             </tr>
           ))}
@@ -211,18 +236,18 @@ const PanelCoordinador = ({ token, onLogout }) => {
       </table>
 
       {solicitudSeleccionada && (
-        <div className="card mb-8">
-          <h3 className="subtitle">Detalles de la Solicitud #{solicitudSeleccionada.id_solicitud}</h3>
-          <p><b>Alumno:</b> {solicitudSeleccionada.nombre_completo}</p>
-          <p><b>Estado:</b> {solicitudSeleccionada.estado}</p>
-          {solicitudSeleccionada.motivo_rechazo && (
-            <p className="text-red"><b>Motivo de rechazo:</b> {solicitudSeleccionada.motivo_rechazo}</p>
-          )}
-          <h4 className="section-title">Documentos:</h4>
-          <ul className="list">
-            {(documentos[solicitudSeleccionada.id_solicitud] || []).map(doc => (
-              <li key={doc.id_documento}>
-                {doc.tipo}: <a href={doc.ruta_archivo} target="_blank" rel="noopener noreferrer" className="link">Ver documento</a>
+          <div className="card mb-8">
+            <h3 className="subtitle">Detalles de la Solicitud #{solicitudSeleccionada.id_solicitud}</h3>
+            <p><b>Alumno:</b> {solicitudSeleccionada.nombre_completo}</p>
+            <p><b>Estado:</b> {solicitudSeleccionada.estado}</p>
+            {solicitudSeleccionada.motivo_rechazo && (
+                <p className="text-red"><b>Motivo de rechazo:</b> {solicitudSeleccionada.motivo_rechazo}</p>
+            )}
+            <h4 className="section-title">Documentos:</h4>
+            <ul className="list">
+              {(documentos[solicitudSeleccionada.id_solicitud] || []).map(doc => (
+                  <li key={doc.id_documento}>
+                    {doc.tipo}: <a href={doc.ruta_archivo} target="_blank" rel="noopener noreferrer" className="link">Ver documento</a>
               </li>
             ))}
           </ul>
@@ -241,7 +266,7 @@ const PanelCoordinador = ({ token, onLogout }) => {
                     {!pago.validado_por_coordinador && (
                       <>
                         <button className="btn btn-green mr-2" onClick={async () => {
-                          await fetch(`http://localhost:3001/pagos/${pago.id_pago}/validar`, {
+                          await  fetch(`${API_URL}/pagos/${pago.id_pago}/validar`, {
                             method: 'PUT',
                             headers: {
                               'Content-Type': 'application/json',
@@ -250,7 +275,7 @@ const PanelCoordinador = ({ token, onLogout }) => {
                             body: JSON.stringify({ validado: true, estado_pago: 'pagado' })
                           });
                           // Refrescar pagos
-                          const res = await fetch(`http://localhost:3001/pagos/solicitud/${solicitudSeleccionada.id_solicitud}`);
+                          const res = await fetch(`${API_URL}/pagos/solicitud/${solicitudSeleccionada.id_solicitud}`);
                           const pagosActualizados = await res.json();
                           setPagos(p => ({ ...p, [solicitudSeleccionada.id_solicitud]: pagosActualizados }));
                         }}>
@@ -258,7 +283,7 @@ const PanelCoordinador = ({ token, onLogout }) => {
                         </button>
                         <button className="btn btn-red" onClick={async () => {
                           const motivo = prompt('Motivo de rechazo del pago:');
-                          await fetch(`http://localhost:3001/pagos/${pago.id_pago}/validar`, {
+                          await fetch(`${API_URL}/pagos/${pago.id_pago}/validar`, {
                             method: 'PUT',
                             headers: {
                               'Content-Type': 'application/json',
@@ -267,7 +292,7 @@ const PanelCoordinador = ({ token, onLogout }) => {
                             body: JSON.stringify({ validado: false, estado_pago: 'no pagado', motivo_rechazo: motivo })
                           });
                           // Refrescar pagos
-                          const res = await fetch(`http://localhost:3001/pagos/solicitud/${solicitudSeleccionada.id_solicitud}`);
+                          const res = await fetch(`${API_URL}/pagos/solicitud/${solicitudSeleccionada.id_solicitud}`);
                           const pagosActualizados = await res.json();
                           setPagos(p => ({ ...p, [solicitudSeleccionada.id_solicitud]: pagosActualizados }));
                         }}>
@@ -303,7 +328,7 @@ const PanelCoordinador = ({ token, onLogout }) => {
                     e.preventDefault();
                     setAsignando(true);
                     const id_casillero = e.target.casillero.value;
-                    const res = await fetch('http://localhost:3001/asignaciones', {
+                    const res = await fetch('${API_URL}/asignaciones', {
                       method: 'POST',
                       headers: {
                         'Content-Type': 'application/json',
@@ -315,7 +340,7 @@ const PanelCoordinador = ({ token, onLogout }) => {
                       const asignacion = await res.json();
                       setCasilleroAsignado(asignacion);
                       // Opcional: refrescar casilleros
-                      const res2 = await fetch('http://localhost:3001/casilleros/disponibles');
+                      const res2 = await fetch('${API_URL}/casilleros/disponibles');
                       setCasilleros(await res2.json());
                     }
                     setAsignando(false);
@@ -379,13 +404,13 @@ const PanelCoordinador = ({ token, onLogout }) => {
                     onClick={async () => {
                       if (!c.disponible) return;
                       if (window.confirm('¿Seguro que deseas eliminar este casillero?')) {
-                        const res = await fetch(`http://localhost:3001/casilleros/${c.id_casillero}`, {
+                        const res = await fetch('${API_URL}/casilleros/${c.id_casillero}', {
                           method: 'DELETE',
                           headers: { 'Authorization': `Bearer ${token}` }
                         });
                         if (res.ok) {
                           setTodosCasilleros(todosCasilleros.filter(x => x.id_casillero !== c.id_casillero));
-                          const resDisponibles = await fetch('http://localhost:3001/casilleros/disponibles');
+                          const resDisponibles = await fetch('${API_URL}/casilleros/disponibles');
                           setCasilleros(await resDisponibles.json());
                         } else {
                           const data = await res.json();
