@@ -1,0 +1,480 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap');
+
+/* Limpia Tailwind y deja solo CSS normal */
+body {
+  font-family: Arial, sans-serif;
+  background: #f5f5f5;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  max-width: 500px;
+  margin: 2rem auto;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  padding: 2rem;
+}
+
+.btn {
+  background: #2563eb;
+  color: white;
+  border: none;
+  padding: 0.5em 1em;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+.btn:hover {
+  background: #1d4ed8;
+}
+
+.input {
+  width: 100%;
+  padding: 0.5em;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  font-size: 1rem;
+}
+.label {
+  font-weight: bold;
+  margin-bottom: 0.25em;
+  display: block;
+}
+.text-center { text-align: center; }
+.text-error { color: #dc2626; }
+.text-success { color: #16a34a; }
+.mt-2 { margin-top: 2rem; }
+.mt-1 { margin-top: 1rem; }
+.mb-1 { margin-bottom: 1rem; }
+.mb-2 { margin-bottom: 2rem; }
+
+/*Código del html de Robert*/
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+body {
+  height: 100vh;
+  background: #000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+  
+
+.login-section {
+  width: 100%;
+  height: 100%;
+  background: url('imaes.jpg') no-repeat center center;
+  background-size: cover;
+  backdrop-filter: blur(10px);
+  color: #fff;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -1;
+}
+
+.login-section h2 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-size: 26px;
+}
+
+.input-box {
+  position: relative;
+  margin-bottom: 1.5rem;
+  border-bottom: 2px solid #fff;
+}
+
+.input-box input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #fff;
+  font-size: 16px;
+  padding: 0.75rem 2rem 0.75rem 0;
+}
+
+.input-box label {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  transition: 0.3s;
+  color: #ccc;
+  font-size: 14px;
+}
+
+.input-box input:focus ~ label,
+.input-box input:valid ~ label {
+  top: -8px;
+  font-size: 12px;
+  color: #0e96d4;
+}
+
+.input-box .icon {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 18px;
+  color: #fff;
+}
+
+.btn {
+  width: 100%;
+  height: 45px;
+  background: #0e96d4;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  color: white;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.btn:hover {
+  background: #0c7bbf;
+}
+
+.text-error {
+  color: #f87171;
+  margin-bottom: 0.75rem;
+  text-align: center;
+}
+
+.text-success {
+  color: #4ade80;
+  margin-bottom: 0.75rem;
+  text-align: center;
+}
+
+.remember-password,
+.create-account {
+  font-size: 14px;
+  text-align: center;
+  margin-top: 1rem;
+  color:#f5f5f5;
+}
+
+.create-account a {
+  color: #fff;
+  text-decoration: underline;
+}
+
+.background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: url('imaes.jpg') center center no-repeat;
+  background-size: cover;
+  width: 100%;
+  height: 100%;
+  filter: blur(10px);
+  z-index: -1;
+}
+
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.login-glass {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 2rem 2.5rem;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  max-width: 420px;
+  color: #fff;
+}
+
+
+/*Panel de coordinador en css*/
+
+.background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: url('imaes.jpg') center center no-repeat;
+  background-size: cover;
+  filter: blur(8px);
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+
+.container {
+  max-width: 95%;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+  overflow-x: auto;
+}
+
+.title {
+  font-size: 1.8rem;
+  color: #fff;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.2);
+  box-shadow: inset 0 0 5px rgba(255,255,255,0.2);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.table th,
+.table td {
+  padding: 1rem;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  text-align: center;
+}
+
+.table thead {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.table tr:hover {
+  background: rgba(255,255,255,0.05);
+}
+
+.btn {
+  padding: 0.4rem 0.8rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #fff;
+}
+
+.btn-green {
+  background-color: #22c55e;
+}
+
+.btn-red {
+  background-color: #ef4444;
+}
+
+.text-red {
+  color: #f87171;
+}
+
+.text-green {
+  color: #4ade80;
+}
+
+.link {
+  color: #60a5fa;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.card {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 16px;
+  padding: 2rem;
+  margin-top: 2rem;
+  color: #fff;
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.1);
+}
+
+.subtitle,
+.section-title {
+  margin-bottom: 1rem;
+  font-size: 1.4rem;
+  font-weight: bold;
+}
+
+.list {
+  margin-bottom: 1.5rem;
+  list-style: disc inside;
+  padding-left: 1rem;
+}
+
+.label {
+  display: block;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+  color: #fff;
+}
+
+.input {
+  width: 100%;
+  padding: 0.5rem;
+  background: rgba(255,255,255,0.1);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 6px;
+  outline: none;
+}
+
+.input:focus {
+  border-color: #3b82f6;
+}
+
+.casillero-asignado {
+  padding: 0.75rem 1rem;
+  background: rgba(16, 185, 129, 0.15);
+  border-left: 4px solid #10b981;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  color: #d1fae5;
+}
+
+.btn-blue {
+  background: #3b82f6;
+}
+
+.btn-blue:hover {
+  background: #2563eb;
+}
+
+.btn-gray {
+  background: #9ca3af;
+  color: #000;
+}
+
+.btn-gray:hover {
+  background: #6b7280;
+}
+
+.text-gray {
+  color: #d1d5db;
+  font-style: italic;
+}
+
+
+.panel-scroll {
+  height: 100vh;
+  overflow-y: auto;
+  padding: 2rem 0;
+  position: relative;
+  z-index: 1;
+}
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.logout-button {
+  position: fixed;
+  top: 1rem;
+  right: 1.5rem;
+  background: rgba(255,255,255,0.15);
+  border: none;
+  border-radius: 6px;
+  color: #fff;
+  padding: 0.5rem 1rem;
+  backdrop-filter: blur(6px);
+  cursor: pointer;
+  z-index: 10;
+  transition: background 0.3s ease;
+}
+
+.logout-button:hover {
+  background: rgba(255,255,255,0.3);
+}
+
+/*Apartado de el estado de solicitud*/
+
+
+.estado-container {
+  position: relative;
+  min-height: 100vh;
+  overflow-y: auto;
+  padding: 3rem 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  z-index: 0;
+}
+
+.glass-panel {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 16px;
+  padding: 2rem;
+  color: #fff;
+  max-width: 480px;
+  width: 100%;
+  box-shadow: 0 0 12px rgba(255,255,255,0.1);
+}
+
+.btn-group {
+  margin-top: 1.5rem;
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.background2 {
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: url('imaes.jpg') center center no-repeat;
+  background-size: cover;
+  filter: blur(4px);
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+
+/*Registrar*/
+
+.link {
+  background: none;
+  border: none;
+  color: #60a5fa;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 0;
+  font: inherit;
+}
+.link:hover {
+  color: white;
+}
+
+.btn-small {
+  background: #0e96d4;
+  color: white;
+  border: none;
+  padding: 0.4rem 0.9rem;
+  font-size: 0.85rem;
+  border-radius: 999px; /* Esto los hace redondos */
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+.btn-small:hover {
+  background: #0c7bbf;
+}
+
+
