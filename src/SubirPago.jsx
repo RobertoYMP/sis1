@@ -21,7 +21,7 @@ const SubirPago = ({ id_solicitud, token }) => {
       const formData = new FormData();
       formData.append('comprobante', comprobante);
       formData.append('id_solicitud', id_solicitud);
-      const res = await fetch('http://localhost:3001/pagos', {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/pagos`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`
