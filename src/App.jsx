@@ -33,10 +33,11 @@ function App() {
   // Refresca el estado del proceso del usuario cada 5 segundos si es alumno
   useEffect(() => {
     let interval;
+    const API_URL = import.meta.env.VITE_API_URL;
     if (user && user.rol === 'alumno') {
       const fetchEstado = async () => {
         try {
-          const res = await fetch(`http://localhost:3001/usuarios/estado-proceso/${user.id_usuario}`, {
+          const res = await fetch(`${API_URL}/usuarios/estado-proceso/${user.id_usuario}`, {
             headers: { 'Authorization': `Bearer ${user.token}` }
           });
           if (res.ok) {
