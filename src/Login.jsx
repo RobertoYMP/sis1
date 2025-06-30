@@ -13,9 +13,9 @@ const Login = ({ onLoginSuccess, onShowRegister }) => {
     setError('');
     setSuccess(false);
     try {
-      const res = await fetch('http://localhost:3001/usuarios/login', {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/usuarios/login`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json  ' },
         body: JSON.stringify({ correo, contrasena })
       });
       if (!res.ok) {
@@ -24,7 +24,7 @@ const Login = ({ onLoginSuccess, onShowRegister }) => {
       const data = await res.json();
       localStorage.setItem('token', data.token);
       setSuccess(true);
-      const estadoRes = await fetch('http://localhost:3001/usuarios/estado-proceso', {
+      const estadoRes = await fetch(`${import.meta.env.VITE_API_URL}/usuarios/estado-proceso`, {
         headers: {
           'Authorization': `Bearer ${data.token}`,
           'Content-Type': 'application/json'
