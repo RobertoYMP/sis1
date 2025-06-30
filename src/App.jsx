@@ -1,7 +1,5 @@
-import { useState, useEffect } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState, useEffect } from 'react';
+import './App.css';
 import Login from './Login';
 import Register from './Register';
 import SolicitudForm from './SolicitudForm';
@@ -13,43 +11,38 @@ import SubirPago from './SubirPago';
 
 function App() {
   const [showRegister, setShowRegister] = useState(false);
-  const [user, setUser] = useState(null); // { id_usuario, correo, rol, token, estadoProceso }
+  const [user, setUser] = useState(null);
   const [paso, setPaso] = useState('solicitud');
-  
 
-
-  // Maneja el login exitoso
   const handleLoginSuccess = (userData) => {
     setUser(userData);
-    // Decide el paso inicial según el estado del proceso
     if (userData.estadoProceso) {
       if (!userData.estadoProceso.solicitud) setPaso('solicitud');
-      else if (
-        userData.estadoProceso.solicitud &&
-        userData.estadoProceso.solicitud.estado !== 'pendiente'
-      ) setPaso('documentos');
+      else if (userData.estadoProceso.solicitud.estado !== 'pendiente') setPaso('documentos');
       else setPaso('solicitud');
     }
   };
 
-  // Refresca el estado del proceso del usuario cada 5 segundos si es alumno
   useEffect(() => {
     let interval;
     if (user && user.rol === 'alumno') {
       const fetchEstado = async () => {
         try {
-          const res = await fetch(`http://localhost:3001/usuarios/estado-proceso/${user.id_usuario}`, {
-            headers: { 'Authorization': `Bearer ${user.token}` }
+          const res = await fetch(`${import.meta.env.VITE_API_URL}/usuarios/estado-proceso/${user.id_usuario}`, {
+            headers: {
+              Authorization: `Bearer ${user.token}`
+            }
           });
           if (res.ok) {
             const estadoProceso = await res.json();
-            setUser(u => ({ ...u, estadoProceso }));
-            // Cambia el paso automáticamente si cambia el estado
+            setUser((u) => ({ ...u, estadoProceso }));
             if (!estadoProceso.solicitud) setPaso('solicitud');
-            else if (estadoProceso.solicitud && estadoProceso.solicitud.estado !== 'pendiente') setPaso('documentos');
+            else if (estadoProceso.solicitud.estado !== 'pendiente') setPaso('documentos');
             else setPaso('solicitud');
           }
-        } catch (e) { /* opcional: manejar error */ }
+        } catch (error) {
+          console.error('Error actualizando estado de proceso:', error);
+        }
       };
       interval = setInterval(fetchEstado, 5000);
     }
