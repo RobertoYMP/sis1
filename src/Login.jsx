@@ -15,7 +15,7 @@ const Login = ({ onLoginSuccess, onShowRegister }) => {
     try {
       const res = await fetch(`${import.meta.env.VITE_API_URL}/usuarios/login`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json  ' },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ correo, contrasena })
       });
       if (!res.ok) {
